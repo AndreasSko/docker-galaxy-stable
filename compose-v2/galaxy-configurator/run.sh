@@ -17,7 +17,7 @@ if [ ! -f /base_config.yml ]; then
     touch /base_config.yml
 fi
 
-configs=( "job_conf.xml" "galaxy.yml" "job_metrics.xml" )
+configs=( "job_conf.xml" "galaxy.yml" "job_metrics.xml" "tool_conf.xml" )
 
 for conf in "${configs[@]}"; do
   echo "Configuring $conf"
