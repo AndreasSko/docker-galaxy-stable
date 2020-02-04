@@ -40,6 +40,10 @@ def alter_context(context):
         if key.startswith(frm):
           key = key[len(frm):].lower()
           if key not in new_context[to]:
+            if value.lower() == "true":
+              value = True
+            elif value.lower() == "false":
+              value = False
             new_context[to][key] = value
 
     return new_context
