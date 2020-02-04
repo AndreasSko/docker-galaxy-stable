@@ -59,6 +59,8 @@ if $PRIVILEGED; then
   chmod 666 /dev/fuse
   mkdir /cvmfs/data.galaxyproject.org
   mount -t cvmfs data.galaxyproject.org /cvmfs/data.galaxyproject.org
+
+  chmod 666 /var/run/docker.sock
 fi
 
 echo "Finished initialization"
