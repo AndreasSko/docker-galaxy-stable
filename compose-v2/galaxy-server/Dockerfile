@@ -92,6 +92,7 @@ COPY ./files/common_cleanup.sh /usr/bin/common_cleanup.sh
 
 RUN groupadd -r $GALAXY_USER -g $GALAXY_GID \
     && useradd -u $GALAXY_UID -r -g $GALAXY_USER -d $GALAXY_HOME -c "Galaxy user" --shell /bin/bash $GALAXY_USER \
+    && chown -R $GALAXY_USER:$GALAXY_USER /root \
     && /usr/bin/common_cleanup.sh
 
 # Install HTCondor
