@@ -7,4 +7,4 @@ COPY ./templates /templates
 COPY ./customize.py /customize.py
 COPY ./run.sh /usr/bin/run.sh
 
-ENTRYPOINT "/usr/bin/run.sh"
+CMD "/usr/bin/run.sh"
