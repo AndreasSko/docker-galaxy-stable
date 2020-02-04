@@ -1,0 +1,8 @@
+# Activate InteractiveTools
+version: "3"
+services:
+  galaxy-configurator:
+    environment:
+      - GALAXY_CONFIG_INTERACTIVETOOLS_ENABLE=True
+      - HOST_PWD=$PWD
+      - EXPORT_DIR=${EXPORT_DIR:-./export}
