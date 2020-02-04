@@ -66,39 +66,6 @@ RUN apt update && apt install --no-install-recommends python-dev python-pip -y &
     && /usr/bin/common_cleanup.sh
 
 FROM ubuntu:19.10 as final
-COPY ./files/common_cleanup.sh /usr/bin/common_cleanup.sh
-
-# Install HTCondor
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt update && apt install --no-install-recommends htcondor -y \
-    && rm /etc/condor/condor_config.local \
-    && find / -name '*.pyc' -delete | true \
-    && /usr/bin/common_cleanup.sh
-
-# Install CVMFS
-RUN apt update \
-    && apt install wget lsb-release -y \
-    && wget https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb \
-    && dpkg -i cvmfs-release-latest_all.deb \
-    && rm -f cvmfs-release-latest_all.deb \
-    && apt update \
-    && apt install --no-install-recommends cvmfs -y \
-    && mkdir /srv/cvmfs \
-    && /usr/bin/common_cleanup.sh
-
-# Install Docker
-RUN apt update \
-    && apt install --no-install-recommends docker -y \
-    && /usr/bin/common_cleanup.sh
-
-COPY files/cvmfs/default.local /etc/cvmfs/default.local
-COPY files/cvmfs/galaxyproject.org.conf /etc/cvmfs/domain.d/galaxyproject.org.conf
-COPY files/cvmfs/data.galaxyproject.org.pub /etc/cvmfs/keys/data.galaxyproject.org.pub
-
-# Install remaining dependencies
-RUN apt update && apt install --no-install-recommends ca-certificates netcat libpq-dev mercurial libgomp1  -y \
-    && /usr/bin/common_cleanup.sh
-
 ENV EXPORT_DIR=/export \
     GALAXY_ROOT=/galaxy \
     HTCONDOR_ROOT=/opt/htcondor
@@ -121,9 +88,42 @@ ENV GALAXY_USER=galaxy \
 
 ENV GALAXY_CONFIG_FILE=$GALAXY_CONFIG_DIR/galaxy.yml
 
-# Set permissions
+COPY ./files/common_cleanup.sh /usr/bin/common_cleanup.sh
+
 RUN groupadd -r $GALAXY_USER -g $GALAXY_GID \
     && useradd -u $GALAXY_UID -r -g $GALAXY_USER -d $GALAXY_HOME -c "Galaxy user" --shell /bin/bash $GALAXY_USER \
+    && /usr/bin/common_cleanup.sh
+
+# Install HTCondor
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt update && apt install --no-install-recommends htcondor -y \
+    && rm /etc/condor/condor_config.local \
+    && find / -name '*.pyc' -delete | true \
+    && /usr/bin/common_cleanup.sh
+
+# Install CVMFS
+RUN apt update \
+    && apt install wget lsb-release -y \
+    && wget https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb \
+    && dpkg -i cvmfs-release-latest_all.deb \
+    && rm -f cvmfs-release-latest_all.deb \
+    && apt update \
+    && apt install --no-install-recommends cvmfs -y \
+    && mkdir /srv/cvmfs \
+    && /usr/bin/common_cleanup.sh
+
+# Install Docker
+RUN apt update \
+    && apt install --no-install-recommends docker.io -y \
+    && usermod -aG docker $GALAXY_USER \
+    && /usr/bin/common_cleanup.sh
+
+COPY files/cvmfs/default.local /etc/cvmfs/default.local
+COPY files/cvmfs/galaxyproject.org.conf /etc/cvmfs/domain.d/galaxyproject.org.conf
+COPY files/cvmfs/data.galaxyproject.org.pub /etc/cvmfs/keys/data.galaxyproject.org.pub
+
+# Install remaining dependencies
+RUN apt update && apt install --no-install-recommends ca-certificates netcat libpq-dev mercurial libgomp1  -y \
     && /usr/bin/common_cleanup.sh
 
 COPY --chown=$GALAXY_USER:$GALAXY_USER --from=build_galaxy ${GALAXY_ROOT} ${GALAXY_ROOT}
