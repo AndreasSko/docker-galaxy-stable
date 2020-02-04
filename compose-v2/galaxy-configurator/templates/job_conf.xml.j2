@@ -9,6 +9,24 @@
         <destination id="local" runner="local">
             <env file="/galaxy/.venv/bin/activate" />
         </destination>
+        {% if galaxy.interactivetools_enable %}
+          <destination id="docker_it_local" runner="local">
+            <env file="/galaxy/.venv/bin/activate" />
+            <param id="docker_enabled">true</param>
+            <param id="docker_volumes">{{ HOST_EXPORT_DIR }}/$galaxy_root:$galaxy_root:ro,{{ HOST_EXPORT_DIR }}/$tool_directory:$tool_directory:ro,{{ HOST_EXPORT_DIR }}/$job_directory:$job_directory:ro,{{ HOST_EXPORT_DIR }}/$working_directory:$working_directory:rw,{{ HOST_EXPORT_DIR }}/$default_file_path:$default_file_path:rw</param>
+            <param id="docker_sudo">false</param>
+            <param id="docker_net">bridge</param>
+            <param id="docker_auto_rm">true</param>
+            <param id="docker_set_user"></param>
+            <param id="require_container">true</param>
+          </destination>
+          <destination id="docker_it_dispatch" runner="dynamic">
+            <env file="/galaxy/.venv/bin/activate" />
+            <param id="type">docker_dispatch</param>
+            <param id="docker_destination_id">docker_local</param>
+            <param id="default_destination_id">local</param>
+          </destination>
+        {% endif %}
         <destination id="condor" runner="condor">
             <env file="/galaxy/.venv/bin/activate" />
         </destination>
@@ -16,5 +34,18 @@
     <tools>
         <tool id="upload1" destination="local" />
         <tool id="__SET_METADATA__" destination="local" />
+        {% if galaxy.interactivetools_enable %}
+          <tool id="interactive_tool_askomics" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_bam_iobio" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_cellxgene" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_ethercalc" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_hicbrowser" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_jupyter_notebook" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_neo4j" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_phinch" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_rstudio" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_wallace" destination="docker_it_dispatch" />
+          <tool id="interactive_tool_wilson" destination="docker_it_dispatch" />
+        {% endif %}
     </tools>
 </job_conf>
