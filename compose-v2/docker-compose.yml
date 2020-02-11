@@ -39,8 +39,8 @@ services:
     # If you are using the official postgres image, it needs to be populated by calling
     # docker-compose run galaxy install_db.sh
     # on first run
-    image: ${IMAGE_DOMAIN:-andreassko}/galaxy-postgres:${IMAGE_TAG:-latest}
-    build: galaxy-postgres
+    image: postgres:12.1-alpine
+    #build: galaxy-postgres
     hostname: postgres
     environment:
       - POSTGRES_PASSWORD=chaopagoosaequuashie
