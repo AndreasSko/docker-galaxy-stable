@@ -20,5 +20,5 @@ export GALAXY_CONFIG_MASTER_API_KEY=${GALAXY_DEFAULT_ADMIN_KEY:-fakekey}
 
 for test in $(echo "$TESTS" | sed "s/,/ /g"); do
   echo "Running test $test"
-  ./galaxy/run_tests.sh --skip-common-startup -selenium "/galaxy/lib/galaxy_test/selenium/test_$test"
+  $GALAXY_ROOT/run_tests.sh --skip-common-startup -selenium "$GALAXY_ROOT/lib/galaxy_test/selenium/test_$test" --report_file "$GALAXY_ROOT/database/selenium_test_$test.html"
 done
