@@ -54,10 +54,11 @@ RUN apt update && apt install --no-install-recommends python-dev python-pip -y &
     && curl -L -s $GALAXY_REPO/archive/$GALAXY_RELEASE.tar.gz | tar xzf - --strip-components=1 -C $GALAXY_ROOT \
     && cd $GALAXY_ROOT \
     && ./scripts/common_startup.sh \
-    && . $GALAXY_ROOT/.venv/bin/activate && pip install psycopg2 \
+    && . $GALAXY_ROOT/.venv/bin/activate \
+    && pip install drmaa galaxy-job-execution psycopg2 \
     # Fix as cheetah was missing C library first
     && pip uninstall cheetah -y \
-    && pip install cheetah drmaa \
+    && pip install cheetah \
     && deactivate \
     && rm -rf .ci .circleci .coveragerc .gitignore .travis.yml CITATION CODE_OF_CONDUCT.md CONTRIBUTING.md CONTRIBUTORS.md \
               LICENSE.txt Makefile README.rst SECURITY_POLICY.md pytest.ini tox.ini \
