@@ -1,4 +1,4 @@
-FROM buildpack-deps:18.04 as build_base
+FROM buildpack-deps:20.04 as build_base
 
 ARG GALAXY_RELEASE=release_19.09
 ARG GALAXY_REPO=https://github.com/galaxyproject/galaxy
@@ -49,7 +49,8 @@ RUN curl -s -L "https://repo.anaconda.com/miniconda/Miniconda2-${MINICONDA_VERSI
 FROM build_base as build_galaxy
 COPY ./files/common_cleanup.sh /usr/bin/common_cleanup.sh
 # Install Galaxy
-RUN apt update && apt install --no-install-recommends python-dev python-pip -y && rm -rf /var/lib/apt/lists/* \
+RUN apt update && apt install --no-install-recommends python-dev -y && rm -rf /var/lib/apt/lists/* \
+    && curl https://bootstrap.pypa.io/get-pip.py | python - \
     && mkdir "${GALAXY_ROOT}" \
     && curl -L -s $GALAXY_REPO/archive/$GALAXY_RELEASE.tar.gz | tar xzf - --strip-components=1 -C $GALAXY_ROOT \
     && cd $GALAXY_ROOT \
@@ -85,7 +86,7 @@ RUN wget https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_
     && /usr/bin/common_cleanup.sh
 
 # --- Final image ---
-FROM ubuntu:18.04 as final
+FROM ubuntu:20.04 as final
 
 COPY ./files/common_cleanup.sh /usr/bin/common_cleanup.sh
 COPY ./files/create_galaxy_user.py /usr/local/bin/create_galaxy_user.py
@@ -118,9 +119,10 @@ RUN groupadd -r $GALAXY_USER -g $GALAXY_GID \
     && /usr/bin/common_cleanup.sh
 
 # Install remaining dependencies
-RUN apt update && apt install --no-install-recommends ca-certificates gcc gnupg2 libgomp1 liblzma-dev libbz2-dev libpq-dev \
-                                                      mercurial make netcat python-dev python-setuptools python-pip \
+RUN apt update && apt install --no-install-recommends ca-certificates curl gcc gnupg2 libgomp1 liblzma-dev libbz2-dev libpq-dev \
+                                                      mercurial make netcat python-dev python-setuptools \
                                                       squashfs-tools zlib1g-dev -y \
+    && curl https://bootstrap.pypa.io/get-pip.py | python - \
     && pip install Cython wheel \
     && pip install pysam \
     && /usr/bin/common_cleanup.sh
