@@ -1,4 +1,4 @@
-FROM buildpack-deps:18.04 as build_singularity
+FROM buildpack-deps:20.04 as build_singularity
 
 ENV SINGULARITY_VERSION=3.5.3
 ENV GO_VERSION=1.13
@@ -17,7 +17,7 @@ RUN wget https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_
     && make -C builddir
 
 
-FROM buildpack-deps:18.04 as galaxy_dependencies
+FROM buildpack-deps:20.04 as galaxy_dependencies
 
 ARG GALAXY_RELEASE=release_19.09
 ARG GALAXY_REPO=https://github.com/galaxyproject/galaxy
@@ -36,7 +36,7 @@ RUN mkdir "${GALAXY_ROOT}" \
     && ls . | grep -v "__init__.py\|datatypes\|exceptions\|metadata\|model\|util\|security" | xargs rm -rf
 
 
-FROM ubuntu:18.04 as final
+FROM ubuntu:20.04 as final
 
 ENV DEBIAN_FRONTEND noninteractive
 
