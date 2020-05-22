@@ -37,12 +37,12 @@ RUN groupadd -r $GALAXY_USER -g $GALAXY_GID \
 ENV SLURM_USER=galaxy \
     SLURM_UID=1450 \
     SLURM_GID=1450 \
-    MUNGER_USER=munge \
+    MUNGE_USER=munge \
     MUNGE_UID=1200 \
     MUNGE_GID=1200
 
-RUN groupadd -r $MUNGER_USER -g $MUNGE_GID \
-    && useradd -u $MUNGE_UID -r -g $MUNGER_USER $MUNGER_USER \
+RUN groupadd -r $MUNGE_USER -g $MUNGE_GID \
+    && useradd -u $MUNGE_UID -r -g $MUNGE_USER $MUNGE_USER \
     && apt update \
     && apt install --no-install-recommends gosu munge python python-dev slurm-wlm -y \
     && rm -rf /var/lib/apt/lists/* && rm -rf /var/cache/*

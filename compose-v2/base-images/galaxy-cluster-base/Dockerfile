@@ -14,11 +14,11 @@ RUN apt update && apt install --no-install-recommends htcondor -y \
     && /usr/bin/common_cleanup.sh
 
 # Install Slurm client
-ENV MUNGER_USER=munge \
+ENV MUNGE_USER=munge \
     MUNGE_UID=1200 \
     MUNGE_GID=1200
-RUN groupadd -r $MUNGER_USER -g $MUNGE_GID \
-    && useradd -u $MUNGE_UID -r -g $MUNGER_USER $MUNGER_USER \
+RUN groupadd -r $MUNGE_USER -g $MUNGE_GID \
+    && useradd -u $MUNGE_UID -r -g $MUNGE_USER $MUNGE_USER \
     && echo "deb http://ppa.launchpad.net/natefoo/slurm-drmaa/ubuntu bionic main" >> /etc/apt/sources.list \
     && echo "deb-src http://ppa.launchpad.net/natefoo/slurm-drmaa/ubuntu bionic main" >> /etc/apt/sources.list \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8DE68488997C5C6BA19021136F2CC56412788738 \
