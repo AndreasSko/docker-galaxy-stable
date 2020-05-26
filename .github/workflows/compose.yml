@@ -256,11 +256,8 @@ jobs:
         shell: bash
         working-directory: ./compose
         continue-on-error: false
-      - name: Allow upload-artifact read access
-        if: failure()
-        run: sudo chmod -R +r ./compose/export/galaxy/database
       - name: Save artifacts for debugging a failed test
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: ${{ matrix.infrastructure.name }}_${{ matrix.test.name }}_first-run
@@ -295,11 +292,8 @@ jobs:
         shell: bash
         working-directory: ./compose
         continue-on-error: false
-      - name: Allow upload-artifact read access
-        if: failure() && matrix.test.second_run == 'true'
-        run: sudo chmod -R +r ./compose/export/galaxy/database
       - name: Save artifacts for debugging a failed test
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         if: failure() && matrix.test.second_run == 'true'
         with:
           name: ${{ matrix.infrastructure.name }}_${{ matrix.test.name }}_second-run
