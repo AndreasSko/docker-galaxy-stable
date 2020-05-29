@@ -18,3 +18,4 @@ do
     --test_output_json ${GALAXY_ROOT:-/galaxy}/database/tool_test_output.json \
     "$workflow";
 done
+exit 1
